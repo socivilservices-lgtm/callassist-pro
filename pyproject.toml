@@ -1,0 +1,10 @@
+[project]
+name = "callassist-pro"
+version = "1.0.0"
+description = "Telegram AI assistant for customer support automation"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+readme = "README.md"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
