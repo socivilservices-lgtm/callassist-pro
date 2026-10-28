@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: callassist
+      POSTGRES_PASSWORD: callassist
+      POSTGRES_DB: callassist
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U callassist"]
+      interval: 5s
+      retries: 10
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: ******db:5432/callassist
+    depends_on:
+      db: { condition: service_healthy }
+  api:
+    build: .
+    command: uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    environment:
+      DATABASE_URL: ******db:5432/callassist
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+volumes:
+  pgdata:
